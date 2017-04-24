@@ -1,4 +1,6 @@
 
+import django
+
 from django.db.backends.postgresql_psycopg2.base import DatabaseWrapper
 from django.conf import settings
 
@@ -13,9 +15,22 @@ class DatabaseWrapper(DatabaseWrapper):
 
     """
 
-    def _cursor(self):
-        cursor = super(DatabaseWrapper, self)._cursor()
-        db_schema = settings.DATABASE_SCHEMAS.get(self.alias)
-        if db_schema:
-            cursor.execute("SET search_path TO \"%s\";" % db_schema)
-        return cursor
+    if (django.VERSION < (1, 8)):
+
+        def _cursor(self):
+            cursor = super(DatabaseWrapper, self)._cursor()
+            db_schema = settings.DATABASE_SCHEMAS.get(self.alias)
+            if db_schema:
+                cursor.execute("SET search_path TO \"%s\";" % db_schema)
+            return cursor
+
+    else:
+        # For Django 1.11
+        def create_cursor(self):
+            cursor = super(DatabaseWrapper, self).create_cursor()
+            db_schema = settings.DATABASE_SCHEMAS.get(self.alias)
+            if db_schema:
+                # DEBUG print(db_schema)
+                cursor.execute("SET search_path TO \"%s\";" % db_schema)
+            return cursor
+

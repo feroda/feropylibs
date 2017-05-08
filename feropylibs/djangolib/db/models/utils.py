@@ -1,3 +1,4 @@
+from django.db.models import Manager
 
 def reklass_model(model_instance, model_subklass):
     """

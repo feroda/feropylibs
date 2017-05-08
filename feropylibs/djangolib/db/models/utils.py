@@ -22,4 +22,6 @@ def reklass_model(model_instance, model_subklass):
             # needed for ManyToManyField for not already saved instances
             pass
 
-    return model_subklass(**kwargs)
+    instance = model_subklass(**kwargs)
+    instance._state.db = model_instance._state.db
+    return instance

@@ -26,7 +26,7 @@ class DatabaseWrapper(DatabaseWrapper):
 
     else:
         # For Django 1.11
-        def create_cursor(self):
+        def create_cursor(self, name=None):
             cursor = super(DatabaseWrapper, self).create_cursor()
             db_schema = settings.DATABASE_SCHEMAS.get(self.alias)
             if db_schema:
